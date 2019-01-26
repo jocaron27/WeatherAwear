@@ -2,7 +2,8 @@
 'use strict';
 
 //#region ------------------------- Imports --------------------------
-import { createClient } from '@google/maps';
+
+import { createClient, GoogleMapsClient } from '@google/maps';
 
 //#endregion
 
@@ -25,19 +26,19 @@ export type RequestInfo = {
  */
 class ApiAdapter {
 
-    private geoCoder;
+    private geoCoder: GoogleMapsClient;
 
     constructor(
         private createClient: (options: any) => any
     ) {
-        // create 
+        // create geocoder HTTP client
         this.geoCoder = this.createClient({
             key: process.env.GOOGLE_GEOLOCATION_KEY
         });
     }
 
     /** Requests & formats location data from Google Geocoding API */
-    public getLocation(requestInfo: RequestInfo, cb: AdapterCallback): void {
+    public getLocation(requestInfo: google.maps.GeocoderRequest, cb: AdapterCallback): void {
         console.debug('Call Starting: apiAdapter getLocation');
         
         this.geoCoder.geocode(requestInfo, (error, response) => {
