@@ -8,6 +8,7 @@
     "allowSyntheticDefaultImports": false,
     "types": [
       "node",
+      "express",
       "googlemaps"
     ],
     "typeRoots": ["../../node_modules/@types"],

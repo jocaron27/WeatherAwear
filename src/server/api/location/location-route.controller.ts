@@ -6,6 +6,8 @@ import * as Express from 'express';
 namespace LocationRoutes {
 
     // #region ---------------------------- APIs ------------------------------------
+
+    /** Gets latitude, longitude, and formatted address for a given location */
     export function getLocation(req: Express.Request, res: Express.Response, next?: Express.NextFunction): void {
         const apiAdapter = req.app.get('apiAdapter');
 
