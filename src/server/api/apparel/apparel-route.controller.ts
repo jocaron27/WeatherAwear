@@ -15,7 +15,7 @@ namespace ApparelController {
 
         function callback(data, error?: any): void {
             if (error) {
-                console.error('Error happened while getting apparel item: getItem');
+                console.error('Error happened while getting apparel item: getItems');
                 console.error(error);
             }
             res.status(200).json(data);

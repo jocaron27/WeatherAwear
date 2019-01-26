@@ -1,7 +1,10 @@
 import * as Express from 'express';
 import { Request } from "express"
+
 export interface IGetUserAuthInfoRequest extends Request {
-  user: appTypes.User
+    user: appTypes.User,
+    login: appTypes.Login,
+    logout: appTypes.Logout
 }
 
 /**

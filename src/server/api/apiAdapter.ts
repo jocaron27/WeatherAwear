@@ -4,6 +4,7 @@
 //#region ------------------------- Imports --------------------------
 
 import { google, createClient, GoogleMapsClient } from '@google/maps';
+import { request } from 'https';
 const { Item, Suggestion, User } = require('../db/models')
 const axios = require('axios');
 
@@ -32,10 +33,61 @@ class ApiAdapter {
         // empty constructor
     }
 
+    /** Authenticate user email and password */
+    public authenticateUser(requestInfo: RequestInfo, cb: AdapterCallback): void {
+        console.debug('Call starting: apiAdapter authenticateUser');
+
+        const { email, password } = requestInfo;
+
+        // sequelize findOne method returns user for given email
+        User.findOne({where: { email }})
+            .then(user => {
+                if (!user) {
+                    console.debug('APIAdapter@authenticateUser - Call ended with error');
+                    cb(null, 'User not found');
+                } else if (!user.correctPassword(password)) {
+                    console.debug('APIAdapter@authenticateUser - Call ended with error');
+                    cb(null, 'Incorrect password');
+                } else {
+                    console.debug('APIAdapter@authenticateUser - Call ended');
+                    cb(user);
+                }
+            })
+            .catch(error => {
+                console.debug('APIAdapter@authenticateUser - Call ended with error');
+                cb(null, error);
+            })
+    }
+
+    /** Add new user to database and log in */
+    public createUser(requestInfo: RequestInfo, cb: AdapterCallback): void {
+        console.debug('Call starting: apiAdapter createUser');
+        console.log(requestInfo);
+        // sequelize create method adds new user row to table
+        User.create(requestInfo)
+            .then(user => {
+                console.debug('APIAdapter@createUser - Call ended');
+                cb(user);
+            })
+            .catch(err => {
+                if (err.name === 'SequelizeUniqueConstraintError') {
+                    console.debug('APIAdapter@createUser - Call ended with error', err);
+                    cb(null, 'User already exists')
+                } else if (err.name === 'SequelizeValidationError'){
+                    console.debug('APIAdapter@createUser - Call ended with error', err);
+                    cb(null, 'Please enter a valid email address.')
+                } else {
+                    console.debug('APIAdapter@createUser - Call ended with error');
+                    cb(null, err);
+                }
+            })
+    }
+
     /** Gets all weather-clothing suggestions from postgres/sequelize database */
     public getAllSuggestions(cb: AdapterCallback): void {
         console.debug('Call starting: apiAdapter getAllSuggestions');
 
+        // sequelize findAll method returns all rows from Suggestion table
         Suggestion.findAll()
             .then(suggestions => {
                 console.debug('APIAdapter@getAllSuggestions - Call ended');
@@ -146,6 +198,7 @@ class ApiAdapter {
 
         const { latitude, longitude } = requestInfo;
 
+        // call DarkSky API
         const result = axios.get(`https://api.darksky.net/forecast/${process.env.DARKSKY_KEY}/${latitude},${longitude}`)
             .then(response => {
                 const weatherResponse = formatWeatherResponse(response);
@@ -213,15 +266,16 @@ class ApiAdapter {
             const { id } = requestInfo.user;
             const { latitude, longitude, location } = requestInfo;
 
-                User.findById(id)
-                  .then(user => user.update({ latitude, longitude, location }))
-                  .then(user => {
-                    cb(user);
-                  })
-                  .catch(error => {
-                    console.debug('APIAdapter@updateUserLocation - Call ended with error');
-                    cb(null, error);
-                  });
+            // sequelize findById method returns user for given ID
+            User.findById(id)
+                .then(user => user.update({ latitude, longitude, location }))
+                .then(user => {
+                cb(user);
+                })
+                .catch(error => {
+                console.debug('APIAdapter@updateUserLocation - Call ended with error');
+                cb(null, error);
+                });
         } else {
             console.debug('APIAdapter@updateUserLocation - Call ended with error');
             cb(null, 'No user provided - apiAdapter@updateUserLocation');
