@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "node src/server",
-    "start-dev": "tsc && nodemon src/server",
+    "start-dev": "tsc && nodemon src/server --watch",
     "start-client": "ng serve",
     "build": "ng build",
     "test": "ng test",
@@ -68,7 +68,7 @@
     "moment": ">=2.19.3",
     "nodemon": "^1.18.9",
     "protractor": "~5.4.0",
-    "ts-node": "~7.0.0",
+    "ts-node": "^8.0.2",
     "tslint": "~5.11.0",
     "typescript": "~3.1.6"
   }
