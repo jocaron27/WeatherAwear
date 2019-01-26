@@ -10,6 +10,12 @@ declare namespace appTypes {
         id: number;
     }
 
+    export type Login = (data: any, callback: LoginCallback) => any;
+
+    type LoginCallback = (error: any) => any;
+
+    export type Logout = () => void;
+
     export type WeatherResponse = WeatherForecast[];
 
     type WeatherForecast = {
