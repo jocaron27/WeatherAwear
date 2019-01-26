@@ -3,7 +3,7 @@ import * as Express from 'express';
 /**
  * Data formatting, processing layer for all location APIs
  */
-namespace LocationRoutes {
+namespace LocationController {
 
     // #region ---------------------------- APIs ------------------------------------
 
@@ -29,4 +29,4 @@ namespace LocationRoutes {
     // #endregion
 }
 
-export default LocationRoutes;
+export default LocationController;
