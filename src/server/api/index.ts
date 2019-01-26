@@ -2,7 +2,7 @@ const router = require('express').Router();
 module.exports = router;
 
 // user info
-// router.use('/users', require('./users'));
+router.use('/users', require('./users'));
 
 // clothing items
 router.use('/apparel', require('./apparel'));
