@@ -72,15 +72,15 @@ const createApp = () => {
 
   // error handling endware
   app.use((err, req, res, next) => {
-    console.error(err);
-    console.error(err.stack);
+    logger.error(err);
+    logger.error(err.stack);
     res.status(err.status || 500).send(err.message || 'Internal server error.');
   })
 }
 
 const startListening = () => {
   // start listening
-  app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+  app.listen(PORT, () => logger.log(`Listening on port ${PORT}`));
 }
 
 const syncDb = () => db.sync()

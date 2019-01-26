@@ -71,7 +71,6 @@ namespace AuthController {
         const method = req.method;
         const time = req['_startTime'];
         const logger = req.app.get('logger');
-        const apiAdapter = req.app.get('apiAdapter');
         logger.info(`${time} - ${method}: auth route @logout`);
         
         req.logout();
