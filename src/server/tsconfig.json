@@ -9,7 +9,9 @@
     "types": [
       "node",
       "express",
-      "googlemaps"
+      "googlemaps",
+      "chai",
+      "jasmine"
     ],
     "typeRoots": ["../../node_modules/@types"],
     "lib": [
@@ -17,6 +19,10 @@
       "es2018"
     ]
   },
+  "include": [
+    "src/**/*.ts",
+    "node_modules/@types"
+  ],
   "exclude": [
     "node_modules"
   ]
