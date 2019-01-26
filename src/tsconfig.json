@@ -1,29 +1,28 @@
 {
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "skipLibCheck": true,
-    "outDir": "../",
-    "target": "es5",
-    "module": "commonjs",
-    "allowSyntheticDefaultImports": false,
-    "types": [
-      "node",
-      "express",
-      "googlemaps",
-      "chai",
-      "jasmine"
-    ],
-    "typeRoots": ["../../node_modules/@types"],
-    "lib": [
-      "es2015",
-      "es2018"
-    ]
-  },
+  "extends": "../tsconfig.json",
   "include": [
     "src/**/*.ts",
     "node_modules/@types"
   ],
   "exclude": [
     "node_modules"
-  ]
+  ],
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "outDir": "./",
+    "target": "es6",
+    "module": "commonjs",
+    "allowSyntheticDefaultImports": false,
+    "types": [
+      "node",
+      "express",
+      "googlemaps",
+      "jasmine"
+    ],
+    "typeRoots": ["../node_modules/@types"],
+    "lib": [
+      "es2015",
+      "es2018"
+    ]
+  }
 }
