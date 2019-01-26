@@ -4,6 +4,7 @@
 //#region ------------------------- Imports --------------------------
 
 import { createClient, GoogleMapsClient } from '@google/maps';
+const { Item, Suggestion, User } = require('../db/models')
 const axios = require('axios');
 
 //#endregion
@@ -13,7 +14,7 @@ const axios = require('axios');
 /** Callback defined in the route controller
  * Logic to be performed on returned data and/or error
  */
-export type AdapterCallback = (data: any, error: any) => void;
+export type AdapterCallback = (data: any, error?: any) => void;
 
 /** Request parameters for API */
 export type RequestInfo = {
@@ -27,21 +28,50 @@ export type RequestInfo = {
  */
 class ApiAdapter {
 
-    private geoCoder: GoogleMapsClient;
+    constructor() {
+        // empty constructor
+    }
 
-    constructor(
-    ) {
-        // create geocoder HTTP client
-        this.geoCoder = createClient({
-            key: process.env.GOOGLE_GEOLOCATION_KEY
-        });
+    /** Gets all weather-clothing suggestions from postgres/sequelize database */
+    public getAllSuggestions(cb: AdapterCallback): void {
+        console.debug('Call starting: apiAdapter getAllSuggestions');
+
+        Suggestion.findAll()
+            .then(suggestions => {
+                console.debug('APIAdapter@getAllSuggestions - Call ended');
+                cb(suggestions);
+            })
+            .catch(error => {
+                console.debug('APIAdapter@getAllSuggestions - Call ended with error');
+                cb(null, error);
+            });
+    }
+
+    /** Gets all clothing items from postgres/sequelize database */
+    public getItems(cb: AdapterCallback): void {
+        console.debug('Call starting: apiAdapter getItems');
+
+        // sequelize findAll method returns all rows from Item table
+        Item.findAll()
+            .then(items => {
+                console.debug('APIAdapter@getItems - Call ended');
+                cb(items);
+            })
+            .catch(err => {
+                console.debug('APIAdapter@getItems - Call ended with error');
+                cb(null, err);
+            });
     }
 
     /** Requests & formats location data from Google Geocoding API */
     public getLocation(requestInfo: google.maps.GeocoderRequest, cb: AdapterCallback): void {
         console.debug('Call Starting: apiAdapter getLocation');
+
+        const geoCoder: GoogleMapsClient = createClient({
+            key: process.env.GOOGLE_GEOLOCATION_KEY
+        })
         
-        this.geoCoder.geocode(requestInfo, (error, response) => {
+        geoCoder.geocode(requestInfo, (error, response) => {
             const locationResponse = formatLocationResponse(response.json.results);
 
             // log if any values are not defined
@@ -55,7 +85,7 @@ class ApiAdapter {
                 console.debug(error);
             }
 
-            console.debug('APIAdapter@getLocation - Call ended')
+            console.debug('APIAdapter@getLocation - Call ended');
             cb(locationResponse, error);
         })
 
@@ -82,18 +112,46 @@ class ApiAdapter {
         }
     }
 
+    /** Gets logged in user from postgres/sequelize database */
+    public getUser(requestInfo: RequestInfo, cb: AdapterCallback): void {
+        console.debug('Call Starting: apiAdapter getUser');
+
+        if (requestInfo.user) {
+            const { id } = requestInfo.user;
+            
+            // sequelize findOne method returns user rows from User table matching ID of logged in user
+            User.findOne({
+              where: {
+                id
+              },
+              attributes: ['id', 'email', 'longitude', 'latitude', 'location']
+            })
+              .then(user => {
+                  console.debug('APIAdapter@getUser - Call ended');
+                  cb(user);
+              })
+              .catch(error => {
+                  console.debug('APIAdapter@getUser - Call ended with error');
+                  cb(null, error);
+              })
+        } else {
+            console.debug('APIAdapter@getUser - Call ended with error');
+            cb(null, 'No user provided - apiAdapter@getUser');
+        }
+    }
+
     /** Requests and formats weather forecast data from DarkSky Weather API */
     public getWeather(requestInfo: RequestInfo, cb: AdapterCallback): void {
         console.debug('Call Starting: apiAdapter getWeather');
 
-        const latitude = requestInfo.latitude;
-        const longitude = requestInfo.longitude;
+        const { latitude, longitude } = requestInfo;
+
         const result = axios.get(`https://api.darksky.net/forecast/${process.env.DARKSKY_KEY}/${latitude},${longitude}`)
             .then(response => {
                 const weatherResponse = formatWeatherResponse(response);
 
                 console.debug('APIAdapter@getWeather - Call ended')
-                cb(weatherResponse, null);
+                cb(weatherResponse);
             })
             .catch(error => {
                 console.debug('APIAdapter@getWeather - Call ended with error')
@@ -124,6 +182,50 @@ class ApiAdapter {
         }
 
         return result;
+    }
+
+     /** Gets all weather-clothing suggestions from postgres/sequelize database, given weather category */
+     public getWeatherSuggestions(requestInfo: RequestInfo, cb: AdapterCallback): void {
+        console.debug('Call starting: apiAdapter getWeatherSuggestions');
+
+        const { weatherId } = requestInfo;
+
+        Suggestion.findAll({
+            where: {
+                weatherId
+            }
+        })
+            .then(suggestions => {
+                console.debug('APIAdapter@getWeatherSuggestions - Call ended');
+                cb(suggestions)
+            })
+            .catch(error => {
+                console.debug('APIAdapter@getWeatherSuggestions - Call ended with error');
+                cb(null, error);
+            })
+    }
+
+    /** Updates default location for logged in user */
+    public updateUserLocation(requestInfo: RequestInfo, cb: AdapterCallback): void {
+        console.debug('Call Starting: apiAdapter updateUserLocation');
+
+        if (requestInfo.user) {
+            const { id } = requestInfo.user;
+            const { latitude, longitude, location } = requestInfo;
+
+                User.findById(id)
+                  .then(user => user.update({ latitude, longitude, location }))
+                  .then(user => {
+                    cb(user);
+                  })
+                  .catch(error => {
+                    console.debug('APIAdapter@updateUserLocation - Call ended with error');
+                    cb(null, error);
+                  });
+        } else {
+            console.debug('APIAdapter@updateUserLocation - Call ended with error');
+            cb(null, 'No user provided - apiAdapter@updateUserLocation');
+        }
     }
 }
 

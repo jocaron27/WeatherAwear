@@ -2,16 +2,16 @@ const router = require('express').Router();
 module.exports = router;
 
 // user info
-// router.use('/users', require('./users'));
+router.use('/users', require('./users'));
 
 // clothing items
-// router.use('/apparel', require('./apparel'));
+router.use('/apparel', require('./apparel'));
 
 // geolocation
 router.use('/location', require('./location'));
 
 // weather-clothing pairings
-// router.use('/suggestions', require('./suggestions'));
+router.use('/suggestions', require('./suggestions'));
 
 // weather forecast
 router.use('/weather', require('./weather'));

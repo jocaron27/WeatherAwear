@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "skipLibCheck": true,
-    "outDir": "./",
+    "outDir": "../",
     "target": "es5",
     "module": "commonjs",
     "allowSyntheticDefaultImports": false,
