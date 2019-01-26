@@ -3,7 +3,7 @@
 
 //#region ------------------------- Imports --------------------------
 
-import { createClient, GoogleMapsClient } from '@google/maps';
+import { google, createClient, GoogleMapsClient } from '@google/maps';
 const { Item, Suggestion, User } = require('../db/models')
 const axios = require('axios');
 
