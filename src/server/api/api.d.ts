@@ -6,6 +6,10 @@ declare namespace appTypes {
         location: string;
     }
 
+    export type User = {
+        id: number;
+    }
+
     export type WeatherResponse = WeatherForecast[];
 
     type WeatherForecast = {

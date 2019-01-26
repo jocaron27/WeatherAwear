@@ -1,7 +1,7 @@
 import * as Express from 'express';
 
 /**
- * Data formatting, processing layer for all location APIs
+ * API call control layer for all weather APIs
  */
 namespace WeatherController {
 
