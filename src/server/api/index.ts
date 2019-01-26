@@ -11,7 +11,7 @@ router.use('/apparel', require('./apparel'));
 router.use('/location', require('./location'));
 
 // weather-clothing pairings
-// router.use('/suggestions', require('./suggestions'));
+router.use('/suggestions', require('./suggestions'));
 
 // weather forecast
 router.use('/weather', require('./weather'));
