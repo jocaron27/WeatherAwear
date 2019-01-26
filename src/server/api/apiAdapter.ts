@@ -4,6 +4,7 @@
 //#region ------------------------- Imports --------------------------
 
 import { createClient, GoogleMapsClient } from '@google/maps';
+const { Item } = require('../db/models')
 const axios = require('axios');
 
 //#endregion
@@ -37,6 +38,22 @@ class ApiAdapter {
         });
     }
 
+    /** Gets all clothing items from postgres/sequelize database */
+    public getItems(cb: AdapterCallback): void {
+        console.debug('Call starting: apiAdapter getItem');
+
+        // sequelize findAll method returns all rows from Item table
+        Item.findAll()
+            .then(items => {
+                console.debug('APIAdapter@getItems - Call ended');
+                cb(items, null);
+            })
+            .catch(err => {
+                console.debug('APIAdapter@getItems - Call ended with error');
+                cb(null, err);
+            });
+    }
+
     /** Requests & formats location data from Google Geocoding API */
     public getLocation(requestInfo: google.maps.GeocoderRequest, cb: AdapterCallback): void {
         console.debug('Call Starting: apiAdapter getLocation');
@@ -55,7 +72,7 @@ class ApiAdapter {
                 console.debug(error);
             }
 
-            console.debug('APIAdapter@getLocation - Call ended')
+            console.debug('APIAdapter@getLocation - Call ended');
             cb(locationResponse, error);
         })
 

@@ -5,7 +5,7 @@ module.exports = router;
 // router.use('/users', require('./users'));
 
 // clothing items
-// router.use('/apparel', require('./apparel'));
+router.use('/apparel', require('./apparel'));
 
 // geolocation
 router.use('/location', require('./location'));
