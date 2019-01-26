@@ -6,6 +6,19 @@ declare namespace appTypes {
         location: string;
     }
 
+    export type WeatherResponse = WeatherForecast[];
+
+    type WeatherForecast = {
+        time: number;
+        timezone: string;
+        summary: string;
+        icon: string;
+        precip: number;
+        preciptype: string;
+        cloud: number;
+        hi: number;
+        lo: number;
+    }
 
 }
 

@@ -14,7 +14,7 @@ router.use('/location', require('./location'));
 // router.use('/suggestions', require('./suggestions'));
 
 // weather forecast
-// router.use('/weather', require('./weather'));
+router.use('/weather', require('./weather'));
 
 router.use((req, res, next) => {
   const error = new Error('Not Found');

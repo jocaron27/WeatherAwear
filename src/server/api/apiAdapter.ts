@@ -4,6 +4,7 @@
 //#region ------------------------- Imports --------------------------
 
 import { createClient, GoogleMapsClient } from '@google/maps';
+const axios = require('axios');
 
 //#endregion
 
@@ -29,10 +30,9 @@ class ApiAdapter {
     private geoCoder: GoogleMapsClient;
 
     constructor(
-        private createClient: (options: any) => any
     ) {
         // create geocoder HTTP client
-        this.geoCoder = this.createClient({
+        this.geoCoder = createClient({
             key: process.env.GOOGLE_GEOLOCATION_KEY
         });
     }
@@ -63,7 +63,7 @@ class ApiAdapter {
          * Latitude and longitude are required inputs for DarkSky weather API
          * Formatted address is used in the UI to display the official location
         */
-       // TODO: type arg as google.maps.GeocoderResult[] when @types/googlemaps is updated
+        // TODO: type arg as google.maps.GeocoderResult[] when @types/googlemaps is updated
         let formatLocationResponse = (response): appTypes.LocationResponse => {
             console.debug('Formatting location response');
             // use first result in response array
@@ -81,11 +81,55 @@ class ApiAdapter {
             return locationResponse;
         }
     }
+
+    /** Requests and formats weather forecast data from DarkSky Weather API */
+    public getWeather(requestInfo: RequestInfo, cb: AdapterCallback): void {
+        console.debug('Call Starting: apiAdapter getWeather');
+
+        const latitude = requestInfo.latitude;
+        const longitude = requestInfo.longitude;
+        const result = axios.get(`https://api.darksky.net/forecast/${process.env.DARKSKY_KEY}/${latitude},${longitude}`)
+            .then(response => {
+                const weatherResponse = formatWeatherResponse(response);
+
+                console.debug('APIAdapter@getWeather - Call ended')
+                cb(weatherResponse, null);
+            })
+            .catch(error => {
+                console.debug('APIAdapter@getWeather - Call ended with error')
+                cb(null, error);
+            })
+
+        /** Extract relevant data for daily weather forecast
+         * See additional available properties at https://darksky.net/dev/docs#response-format
+         */
+        let formatWeatherResponse = (response): appTypes.WeatherResponse => {
+            console.debug('Formatting location response');
+
+            const forecast = response.data.daily.data;
+
+            return forecast.map(day => {
+                return {
+                    time: day.time,
+                    timezone: response.data.timezone,
+                    summary: day.summary,
+                    icon: day.icon,
+                    precip: day.precipProbability,
+                    precipType: day.precipType,
+                    cloud: day.cloudCover,
+                    hi: day.temperatureHigh,
+                    lo: day.temperatureLow
+                }
+            })
+        }
+
+        return result;
+    }
 }
 
 /** Instantiates & returns the API Adapter class with dependencies */
 export function createAPIAdapter(): ApiAdapter {
-    let apiAdapter = new ApiAdapter(createClient);
+    let apiAdapter = new ApiAdapter();
 
     return apiAdapter;
 }
