@@ -1,12 +1,22 @@
-const Sequelize = require('sequelize');
-if (process.env.NODE_ENV !== 'production') require('../../../secrets');
-const dbInstance = new Sequelize(
-  process.env.DATABASE_URL || `postgres://${process.env.PG_USER}:${process.env.PG_PW}@localhost:5432/weatherawear`, {
-    logging: false
-  }
-);
+// const Sequelize = require('sequelize');
+// if (process.env.NODE_ENV !== 'production') require('../../../secrets');
+// const dbInstance = new Sequelize(
+//   process.env.DATABASE_URL || `postgres://${process.env.PG_USER}:${process.env.PG_PW}@localhost:5432/weatherawear`, {
+//     logging: false
+//   }
+// );
 
-// register models
+// // register models
 // require('./models');
 
-module.exports = dbInstance;
+// module.exports = dbInstance;
+namespace database {
+  const db = require('./db');
+
+  // register models
+  require('./models');
+
+  module.exports = db;
+}
+
+
