@@ -5,6 +5,6 @@ const router = require('express').Router();
 module.exports = router;
 
 
-//get a location (latitude/longitude) from city name
-//api/location
+// get a location (latitude/longitude) from city name
+// api/location
 router.get('/', location.getLocation);

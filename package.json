@@ -14,8 +14,8 @@
   },
   "nodemonConfig": {
     "watch": ["src/server"],
-    "ext": "ts",
-    "ignore": ["*.test.ts"],
+    "ext": "js",
+    "ignore": ["*.spec.js"],
     "delay": "3",
     "execMap": {
       "ts": "ts-node"

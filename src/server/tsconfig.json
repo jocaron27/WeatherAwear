@@ -1,15 +1,5 @@
 {
-  "extends": "../tsconfig.json",
-  "include": [
-    "server/**/*.ts",
-    "server/*.ts",
-    "**/*.ts",
-    "node_modules/@types"
-  ],
-  "exclude": [
-    "node_modules"
-  ],
-  "compileOnSave": true,
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "skipLibCheck": true,
     "outDir": "./",
@@ -27,5 +17,14 @@
       "es2015",
       "es2018"
     ]
-  }
+  },
+  "include": [
+    "**/*.ts",
+    "*.ts",
+    "node_modules/@types"
+  ],
+  "exclude": [
+    "**/*.spec.ts",
+    "node_modules"
+  ]
 }

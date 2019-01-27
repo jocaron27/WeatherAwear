@@ -20,7 +20,7 @@ namespace AuthController {
         const requestInfo = {
             email: req.body.email,
             password: req.body.password
-        }
+        };
 
         apiAdapter.authenticateUser(requestInfo, callback);
 
@@ -29,7 +29,7 @@ namespace AuthController {
                 logger.error('Error happened while authenticating user: authenticateUser');
                 logger.error(error);
             }
-            req.login(data, err => (err ? next(err) : res.json(data)))
+            req.login(data, err => (err ? next(err) : res.json(data)));
         }
     }
 
@@ -50,7 +50,7 @@ namespace AuthController {
                 logger.error('Error happened while creating user: createUser');
                 logger.error(error);
             }
-            req.login(data, err => (err ? next(err) : res.json(data)))
+            req.login(data, err => (err ? next(err) : res.json(data)));
         }
     }
 

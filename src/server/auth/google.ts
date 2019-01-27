@@ -27,7 +27,7 @@ namespace googleAuth {
             .then(createdUser => done(null, createdUser))
         ))
         .catch(done);
-    })
+    });
 
     passport.use(strategy);
 

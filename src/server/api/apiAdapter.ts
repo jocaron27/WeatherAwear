@@ -5,7 +5,7 @@
 
 import { google, createClient, GoogleMapsClient } from '@google/maps';
 import { Logger } from '../logger';
-const { Item, Suggestion, User } = require('../db/models')
+const { Item, Suggestion, User } = require('../db/models');
 const axios = require('axios');
 
 //#endregion
@@ -20,7 +20,7 @@ export type AdapterCallback = (data: any, error?: any) => void;
 /** Request parameters for API */
 export type RequestInfo = {
     [propNames: string]: any;
-}
+};
 
 //#endregion
 
@@ -61,7 +61,7 @@ class ApiAdapter {
                 const endTime = new Date(Date.now());
                 this.logger.error(`${endTime} - Call ended with error: APIAdapter@authenticateUser`);
                 cb(null, error);
-            })
+            });
     }
 
     /** Add new user to database and log in */
@@ -81,17 +81,17 @@ class ApiAdapter {
                 if (err.name === 'SequelizeUniqueConstraintError') {
                     const endTime = new Date(Date.now());
                     this.logger.error(`${endTime} - Call ended with error: APIAdapter@createUser`, err);
-                    cb(null, 'User already exists')
-                } else if (err.name === 'SequelizeValidationError'){
+                    cb(null, 'User already exists');
+                } else if (err.name === 'SequelizeValidationError') {
                     const endTime = new Date(Date.now());
                     this.logger.error(`${endTime} - Call ended with error: APIAdapter@createUser`, err);
-                    cb(null, 'Please enter a valid email address.')
+                    cb(null, 'Please enter a valid email address.');
                 } else {
                     const endTime = new Date(Date.now());
                     this.logger.error(`${endTime} - Call ended with error: APIAdapter@createUser`);
                     cb(null, err);
                 }
-            })
+            });
     }
 
     /** Gets all weather-clothing suggestions from postgres/sequelize database */
@@ -141,7 +141,7 @@ class ApiAdapter {
 
         const geoCoder: GoogleMapsClient = createClient({
             key: process.env.GOOGLE_GEOLOCATION_KEY
-        })
+        });
         
         geoCoder.geocode(requestInfo, (error, response) => {
             const locationResponse = formatLocationResponse(response.json.results);
@@ -160,14 +160,14 @@ class ApiAdapter {
             const endTime = new Date(Date.now());
             this.logger.debug(`${endTime} - Call ended: APIAdapter@getLocation`);
             cb(locationResponse, error);
-        })
+        });
 
         /** Extract relevant data for location response 
          * Latitude and longitude are required inputs for DarkSky weather API
          * Formatted address is used in the UI to display the official location
         */
         // TODO: type arg as google.maps.GeocoderResult[] when @types/googlemaps is updated
-        let formatLocationResponse = (response): appTypes.LocationResponse => {
+        const formatLocationResponse = (response): appTypes.LocationResponse => {
             const time = new Date(Date.now());
             this.logger.debug(`${time} - Formatting location response`);
 
@@ -184,7 +184,7 @@ class ApiAdapter {
             const locationResponse: appTypes.LocationResponse = { lat, lng, location };
 
             return locationResponse;
-        }
+        };
     }
 
     /** Gets logged in user from postgres/sequelize database */
@@ -211,7 +211,7 @@ class ApiAdapter {
                 const endTime = new Date(Date.now());
                 this.logger.error(`${endTime} - 'Call ended with error: APIAdapter@getUser`);
                 cb(null, error);
-              })
+              });
         } else {
             const endTime = new Date(Date.now());
             this.logger.error(`${endTime} - Call ended with error: APIAdapter@getUser`);
@@ -232,19 +232,19 @@ class ApiAdapter {
                 const weatherResponse = formatWeatherResponse(response);
 
                 const endTime = new Date(Date.now());
-                this.logger.debug(`${endTime} - Call ended: APIAdapter@getWeather`)
+                this.logger.debug(`${endTime} - Call ended: APIAdapter@getWeather`);
                 cb(weatherResponse);
             })
             .catch(error => {
                 const endTime = new Date(Date.now());
-                this.logger.error(`${endTime} - Call ended with error: APIAdapter@getWeather`)
+                this.logger.error(`${endTime} - Call ended with error: APIAdapter@getWeather`);
                 cb(null, error);
-            })
+            });
 
         /** Extract relevant data for daily weather forecast
          * See additional available properties at https://darksky.net/dev/docs#response-format
          */
-        let formatWeatherResponse = (response): appTypes.WeatherResponse => {
+        const formatWeatherResponse = (response): appTypes.WeatherResponse => {
             const time = new Date(Date.now());
             this.logger.debug(`${time} - Formatting location response`);
 
@@ -261,9 +261,9 @@ class ApiAdapter {
                     cloud: day.cloudCover,
                     hi: day.temperatureHigh,
                     lo: day.temperatureLow
-                }
-            })
-        }
+                };
+            });
+        };
 
         return result;
     }
@@ -283,13 +283,13 @@ class ApiAdapter {
             .then(suggestions => {
                 const endTime = new Date(Date.now());
                 this.logger.debug(`${endTime} - Call ended: APIAdapter@getWeatherSuggestions`);
-                cb(suggestions)
+                cb(suggestions);
             })
             .catch(error => {
                 const endTime = new Date(Date.now());
                 this.logger.error(`${endTime} - Call ended with error: APIAdapter@getWeatherSuggestions`);
                 cb(null, error);
-            })
+            });
     }
 
     /** Updates default location for logged in user */
@@ -324,7 +324,7 @@ class ApiAdapter {
 
 /** Instantiates & returns the API Adapter class with dependencies */
 export function createAPIAdapter(logger: Logger): ApiAdapter {
-    let apiAdapter = new ApiAdapter(logger);
+    const apiAdapter = new ApiAdapter(logger);
 
     return apiAdapter;
 }

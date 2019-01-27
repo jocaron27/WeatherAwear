@@ -22,7 +22,7 @@ passport.serializeUser((user, done) => done(null, user.id));
 passport.deserializeUser((id, done) =>
   db.models.user.findById(id)
     .then(user => done(null, user))
-    .catch(done))
+    .catch(done));
 
 const createApp = () => {
   // logging middleware
@@ -34,6 +34,7 @@ const createApp = () => {
 
   // compression middleware
   app.use(compression());
+  console.log('hello');
 
   // session middleware with passport
   app.use(session({
@@ -63,33 +64,33 @@ const createApp = () => {
     } else {
       next();
     }
-  })
+  });
 
   // sends index.html
   app.use('*', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'client/index.html'));
-  })
+  });
 
   // error handling endware
   app.use((err, req, res, next) => {
     logger.error(err);
     logger.error(err.stack);
     res.status(err.status || 500).send(err.message || 'Internal server error.');
-  })
-}
+  });
+};
 
 const startListening = () => {
   // start listening
   app.listen(PORT, () => logger.log(`Listening on port ${PORT}`));
-}
+};
 
-const syncDb = () => db.sync()
+const syncDb = () => db.sync();
 
 if (require.main === module) {
   sessionStore.sync()
     .then(syncDb)
     .then(createApp)
-    .then(startListening)
+    .then(startListening);
 } else {
   createApp();
 }

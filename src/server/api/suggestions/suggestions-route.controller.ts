@@ -36,7 +36,7 @@ namespace SuggestionsController {
 
         const requestInfo = {
             weatherId: req.params.id
-        }
+        };
 
         apiAdapter.getWeatherSuggestions(requestInfo, callback);
 

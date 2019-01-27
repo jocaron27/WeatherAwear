@@ -4,6 +4,6 @@ const router = require('express').Router();
 
 module.exports = router;
 
-//get all clothing items
-//api/apparel
+// get all clothing items
+// api/apparel
 router.get('/', apparel.getItems);

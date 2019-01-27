@@ -1,10 +1,10 @@
 import * as Express from 'express';
-import { Request } from "express";
+import { Request } from 'express';
 
 export interface IGetUserAuthInfoRequest extends Request {
-    user: appTypes.User,
-    login: appTypes.Login,
-    logout: appTypes.Logout
+    user: appTypes.User;
+    login: appTypes.Login;
+    logout: appTypes.Logout;
 }
 
 /**
@@ -24,7 +24,7 @@ namespace UserController {
 
         const requestInfo = {
             user: req.user
-        }
+        };
 
         apiAdapter.getUser(requestInfo, callback);
 
@@ -50,7 +50,7 @@ namespace UserController {
             latitude: req.body.lat,
             longitude: req.body.lng,
             location: req.body.location
-        }
+        };
 
         apiAdapter.updateUserLocation(requestInfo, callback);
 
